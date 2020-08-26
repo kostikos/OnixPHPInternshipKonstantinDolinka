@@ -6,10 +6,34 @@ class User
     private $name;
     private $balance;
 
-    public function __construct($name, $balance)
+    /* public function __construct($name, $balance)
+      {
+          $this->name = $name;
+          $this->balance = $balance;
+      }*/
+
+    public function __get($property)
     {
-        $this->name = $name;
-        $this->balance = $balance;
+        switch ($property) {
+            case 'balance':
+                return $this->balance;
+            case 'name':
+                return $this->name;
+
+        }
+    }
+
+    public function __set($property, $value)
+    {
+        switch ($property) {
+            case 'balance':
+                $this->balance = $value;
+                break;
+            case 'name':
+                $this->name = $value;
+                break;
+
+        }
     }
 
     public function printStatus()
@@ -27,12 +51,15 @@ class User
             echo "У пользователя $this->name недостаточно денег на счету!<br>";
         }
     }
-
-
 }
 
-$Vasya = new User("VASILII", 200);
-$Petja = new User("Petja", 6000);
+$Vasya = new User();
+$Vasya->name = "VASILII";
+$Vasya->balance = 200;
+$Petja = new User();
+$Petja->name = "Petja";
+$Petja->balance = 6000;
+
 $Vasya->printStatus();
 $Petja->printStatus();
 $Vasya->giveMoney(100, $Petja);
