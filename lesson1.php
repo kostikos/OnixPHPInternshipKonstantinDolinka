@@ -6,59 +6,41 @@ class User
     private $name;
     private $balance;
 
-    /* public function __construct($name, $balance)
-      {
-          $this->name = $name;
-          $this->balance = $balance;
-      }*/
+     public function __construct($name, $balance)
+     {
+         $this->name = $name;
+         $this->balance = $balance;
+     }
 
-    public function __get($property)
+    public function getBalance()
     {
-        switch ($property) {
-            case 'balance':
-                return $this->balance;
-            case 'name':
-                return $this->name;
-
-        }
+        return $this->balance;
     }
 
-    public function __set($property, $value)
+    public function setBalance($balance)
     {
-        switch ($property) {
-            case 'balance':
-                $this->balance = $value;
-                break;
-            case 'name':
-                $this->name = $value;
-                break;
-
-        }
+        $this->balance = $balance;
     }
 
     public function printStatus()
     {
-        echo "У пользователя  $this->name сейчас на счету  $this->balance<br>";
+        echo "У пользователя  $this->name сейчас на счету " . $this->getBalance() . "<br>";
     }
 
-    public function giveMoney($quantity, $payer)
+    public function giveMoney($quantity, $recipient)
     {
-        if ($quantity <= $this->balance) {
-            $this->balance -= $quantity;
-            $payer->balance += $quantity;
-            echo "Пользователь $this->name перечислил $quantity пользователю $payer->name<br>";
+        if ($quantity <= $this->getBalance()) {
+            $this->setBalance($this->getBalance() - $quantity);
+            $recipient->setBalance($recipient->getBalance() + $quantity);
+            echo "Пользователь $this->name перечислил $quantity пользователю $recipient->name<br>";
         } else {
             echo "У пользователя $this->name недостаточно денег на счету!<br>";
         }
     }
 }
 
-$Vasya = new User();
-$Vasya->name = "VASILII";
-$Vasya->balance = 200;
-$Petja = new User();
-$Petja->name = "Petja";
-$Petja->balance = 6000;
+$Vasya = new User("VASILII", 150);
+$Petja = new User("Petja", 1500);
 
 $Vasya->printStatus();
 $Petja->printStatus();
