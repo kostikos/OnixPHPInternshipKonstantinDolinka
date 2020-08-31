@@ -61,7 +61,7 @@ abstract class Product
      */
     public function __toString()
     {
-        return "$this->name - $this->price y.e; Покупатель $this->owner; " . PHP_EOL;
+        return "$this->name - $this->price y.e; Покупатель $this->owner; <br>" . PHP_EOL;
     }
 
     /**
@@ -76,26 +76,73 @@ abstract class Product
 
     /**
      * Метот выводит список совершенных покупок, которые храняться в статическом свойсвте $products
-     * @return \IteratorAggregate|__anonymous@1738  системное название анонимного класа
      */
     public static function getOrderList()
     {
         /**
-         * создаем абстрактный класс, передаем у него массив с покупками, подключаем интерфейс итератора, не совсем понял
-         * зачем этот итератор вообще нужен, есть цикл foreach, он его дополняет? или как?
+         * создаем абстрактный класс, передаем у него массив с покупками, подключаем интерфейс итератора
          */
-        return new class (self::$products) implements \IteratorAggregate {
+        return new class (self::$products) implements \Iterator {
             private $orderList = array();
 
-            //переопределяем статическое свойсвто
+            //переопределяем статическое свойсвто для удобства ипсользования
             public function __construct($products)
             {
                 $this->orderList = $products;
+
+            }
+            //start обязательные методы класса Итератор
+
+            /**
+             * перемотка в начало
+             */
+            public function rewind()
+            {
+                reset($this->orderList);
             }
 
             /**
+             * текущий елемент
+             */
+            public function current()
+            {
+                $orderList = current($this->orderList);
+                return $orderList;
+            }
+
+            /**
+             * возвращает ключ
+             */
+            public function key()
+            {
+                $var = key($this->var);
+                return $var;
+            }
+
+            /**
+             * следующий елемент
+             */
+            public function next()
+            {
+
+                $orderList = next($this->orderList);
+                return $orderList;
+            }
+
+            /**
+             *  проверка ключа
+             */
+            public function valid()
+            {
+                $key = key($this->orderList);
+                $orderList = ($key !== NULL && $key !== FALSE);
+                return $orderList;
+            }
+            //end обязательные методы класса Итератор
+
+            /**
              * Выводим список заказов,из-за того что ранее описалы метоыд __toString() обращаемся к объектам в масиве
-             * как к строкам
+             * как к строкам, в коде не используем так как в ТЗ нужно использовать итератор.
              *
              */
             public function printOrderList()
@@ -105,14 +152,7 @@ abstract class Product
                 }
             }
 
-            /**
-             * Обязательный метод
-             * @return MyIterator|\Traversable
-             */
-            public function getIterator()
-            {
-                return new MyIterator($this->orderList);
-            }
+
         };
     }
 
@@ -153,7 +193,10 @@ Product::registerProduct($pokuka2);
 Product::registerProduct($pokuka3);
 Product::registerProduct($pokuka11);
 Product::registerProduct($pokuka2);
-Product::getOrderList()->printOrderList();
+//Product::getOrderList()->printOrderList();
+foreach (Product::getOrderList() as $product) {
+    echo $product;
+}
 
 
 ?>
